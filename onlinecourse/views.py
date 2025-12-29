@@ -107,7 +107,7 @@ def enroll(request, course_id):
 def submit(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
     user = request.user
-    enrollment = Enrollment.objects.get(user, course)
+    enrollment = Enrollment.objects.get(user=user, course=course)
     submission = Submission.objects.create(enrollment=enrollment)
     choices = extract_answers(request)
     submission.choices.set(choices)
@@ -135,7 +135,7 @@ def show_exam_result(request, course_id, submission_id):
     total_score = 0
     questions = course.question_set.all()  # Supondo que o curso tenha perguntas relacionadas
     for question in questions:
-        correct_choices = question.question_set.filter(is_correct=True)  # Obtenha todas as escolhas corretas para a pergunta
+        correct_choices = question.choice_set.filter(is_correct=True)  # Obtenha todas as escolhas corretas para a pergunta
         selected_choices = choices.filter(question=question)  # Obtenha as escolhas selecionadas pelo usuário para a pergunta
         # Verifique se as escolhas selecionadas são as mesmas que as escolhas corretas
         if set(correct_choices) == set(selected_choices):
